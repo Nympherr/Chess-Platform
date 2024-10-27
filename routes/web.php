@@ -14,4 +14,8 @@ Route::get('/login', function() {
     return view('pages.login');
 });
 
+Route::get('/dashboard', function() {
+    return view('pages.dashboard');
+})->middleware('auth')->name('dashboard');
+
 require __DIR__.'/auth.php';
