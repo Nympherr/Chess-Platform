@@ -8,7 +8,7 @@
 
 </head>
 
-<body>
+<body class="h-screen">
 
     @yield('content')
     
