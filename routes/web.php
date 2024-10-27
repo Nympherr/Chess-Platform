@@ -13,3 +13,5 @@ Route::get('/register', function () {
 Route::get('/login', function() {
     return view('pages.login');
 });
+
+require __DIR__.'/auth.php';
