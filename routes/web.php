@@ -31,6 +31,8 @@ Route::middleware('auth')->group(function () {
     })->name('user-profile');
 
     Route::post('/change-user-info', [ChangeUserSettings::class, 'change_user_settings']);
+    
+    Route::post('/update-password', [ChangeUserSettings::class, 'update_password']);
 });
 
 require __DIR__.'/auth.php';

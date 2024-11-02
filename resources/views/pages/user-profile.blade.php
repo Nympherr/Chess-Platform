@@ -55,26 +55,38 @@
         <div class="w-1/3">
 
             <h3 class="font-bold mb-5">Change password</h3>
-            <form action="reset-password" method="POST" class="flex flex-col gap-4">
+            <form action="/update-password" method="POST" class="flex flex-col gap-4">
                 @csrf
 
                 <div class="flex flex-col">
                     <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Current password</label>
-                    <input type="password" placeholder="********" name="current-password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 outline-none">
+                    <input type="password" required placeholder="********" name="current_password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 outline-none">
+                    @if(session('current_password_error'))
+                        <p class="text-red-500 mt-2">{{ session('current_password_error') }}</p>
+                    @endif
                 </div>
 
                 <div class="flex flex-col">
                     <label for="password_confirmation" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">New password</label>
-                    <input type="password" placeholder="********" name="new-password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 outline-none">
+                    <input type="password" required placeholder="********" name="new_password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 outline-none">
+                    @error('new_password')
+                        <span class="text-red-500">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="flex flex-col">
                     <label for="password_confirmation" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Repeat new password</label>
-                    <input type="password" placeholder="********" name="new-password-confirmation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 outline-none">
+                    <input type="password" required placeholder="********" name="new_password_confirmation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 outline-none">
+                    @error('new_password')
+                        <span class="text-red-500">{{ $message }}</span>
+                    @enderror
                 </div>
 
-                <button type="submit" class="bg-purple-600 w-full   rounded-lg p-2 text-white font-bold hover:bg-purple-700 transition">Change password</button>
+                <button type="submit" class="bg-purple-600 w-full   rounded-lg p-2 text-white font-bold hover:bg-purple-700 transition">Update password</button>
             </form>
+            @if(session('password_change_success'))
+                <p class="text-green-600 mt-2">{{ session('password_change_success') }}</p>
+            @endif
         </div>
     
         <div class="w-1/3">
