@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\User\ChangeUserSettings;
 
 Route::middleware('guest')->group(function () {
     Route::get('/', function() {
@@ -20,6 +21,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function() {
         return view('pages.dashboard');
     })->name('dashboard');
+
+    Route::get('/play', function() {
+        return view('pages.play');
+    });
+
+    Route::get('/user-profile', function() {
+        return view('pages.user-profile');
+    })->name('user-profile');
+
+    Route::post('/change-user-info', [ChangeUserSettings::class, 'change_user_settings']);
 });
 
 require __DIR__.'/auth.php';
