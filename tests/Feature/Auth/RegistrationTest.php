@@ -19,6 +19,6 @@ class RegistrationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertNoContent();
+        $response->assertRedirect('/dashboard');
     }
 }
