@@ -2,14 +2,16 @@
 
 @section('content')
     <div class="flex justify-center">
-        <div class="chessboard border rounded">
+        <div class="border rounded">
             @foreach($board_data as $rank)
-                <div class="flex chessboard-rank">
+                <div class="flex">
                     @foreach($rank as $file)
                         @php
                             $square_color = $file['square_color'] == 'lightCol' ? 'bg-amber-700' : 'bg-slate-100';   
                         @endphp
-                        <div class="{{ $square_color }} chessboard-file w-12 h-12"></div>
+                        <div class="{{ $square_color }} w-12 h-12">
+                            
+                        </div>
                     @endforeach
                 </div>
             @endforeach
