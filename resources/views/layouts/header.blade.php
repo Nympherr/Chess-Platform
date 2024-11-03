@@ -17,7 +17,7 @@
                 <a href="/logout" class="bg-violet-600 hover:bg-violet-700 transition rounded py-1 px-4 text-white font-bold" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     Logout
                 </a>
-                <form id="logout-form" action="/logout" method="POST" style="hidden">
+                <form id="logout-form" action="/logout" method="POST" class="hidden">
                     @csrf
                 </form>
             </div>
