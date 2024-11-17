@@ -1,11 +1,27 @@
 <div>
     @if ($isPairing)
-        <p>Pairing players...</p>
+        <p class="font-bold text-lg">Waiting for other player to join...</p>
     @else
-        <p>{{ $player1 }} vs {{ $player2 }}</p>
-    @endif
+        <div>
+            <div class="border rounded">
+                <div id="chessBoard" style="width: 400px"></div>
+            </div>
+    
+            <div class="flex justify-between mt-4">
+                <div>
+                    <p class="font-bold">WHITE player</p>
+                    <p>{{ $player1 }}</p>
+                </div>
+                <div>
+                    <p class="font-bold">BLACK player</p>
+                    <p>{{ $player2 }}</p>
+                </div>
+            </div>
+        </div>
 
-    <button wire:click="pairPlayers" @if (!$isPairing) disabled @endif>
-        Pair Players
-    </button>
+        <div class="mt-5">
+            <p>Result: <span id="game-result">N/A</span></p>
+            <p>Current move: <span id="player-turn">white</span></p>
+        </div>
+    @endif
 </div>

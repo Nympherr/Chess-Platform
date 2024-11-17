@@ -3,11 +3,14 @@ import '@chrisoakman/chessboard2/dist/chessboard2.min.css';
 import { Chess } from 'chess.js'
 
 Echo.channel('chess-room')
-    .listen('PlayerPaired', (event) => {
+    .listen('.players.paired', (event) => {
         alert(`${event.player1} vs ${event.player2}`);
     });
 
 const game = new Chess()
+let playerTurn = null;
+const gameResultElement = document.getElementById('game-result');
+const playerTurnElement = document.getElementById('player-turn');
 
 const boardConfig = {
   draggable: true,
@@ -15,11 +18,7 @@ const boardConfig = {
   onDragStart,
   onDrop
 }
-const board = Chessboard2('myBoard', boardConfig)
-
-const fenEl = byId('gameFEN')
-
-updateStatus()
+const board = Chessboard2('chessBoard', boardConfig)
 
 function onDragStart (dragStartEvt) {
 
@@ -63,16 +62,32 @@ function onDrop (dropEvt) {
   if (!move){
     return 'snapback';
   }
-  
-  board.fen(game.fen(), () => {
-    updateStatus()
-  })
-}
 
-function updateStatus () {
-  fenEl.innerHTML = game.fen()
-}
+  playerTurn = game.turn();
 
-function byId (id) {
-  return document.getElementById(id)
+  if(game.isGameOver()){
+    if (game.isCheckmate() && playerTurn === 'w') {
+      gameResultElement.textContent = 'Black wins! 0 - 1'
+    } else if (game.isCheckmate() && playerTurn === 'b') {
+      gameResultElement.textContent = 'White wins! 1 - 0'
+    } else if (game.isStalemate() && playerTurn === 'w') {
+      gameResultElement.textContent = 'Game is drawn! 1/2'
+    } else if (game.isStalemate() && playerTurn === 'b') {
+      gameResultElement.textContent = 'Game is drawn! 1/2'
+    } else if (game.isThreefoldRepetition()) {
+      gameResultElement.textContent = 'Game is drawn! 1/2'
+    } else if (game.isInsufficientMaterial()) {
+      gameResultElement.textContent = 'Game is drawn! 1/2'
+    } else if (game.isDraw()) {
+      gameResultElement.textContent = 'Game is drawn! 1/2'
+    }
+  }
+  switch(playerTurn){
+    case 'w':
+      playerTurnElement.textContent = 'white';
+      break;
+    case 'b':
+      playerTurnElement.textContent = 'black';
+      break;
+  }
 }
