@@ -2,6 +2,11 @@ import '@chrisoakman/chessboard2/dist/chessboard2.min.js';
 import '@chrisoakman/chessboard2/dist/chessboard2.min.css';
 import { Chess } from 'chess.js'
 
+Echo.channel('chess-room')
+    .listen('PlayerPaired', (event) => {
+        alert(`${event.player1} vs ${event.player2}`);
+    });
+
 const game = new Chess()
 
 const boardConfig = {

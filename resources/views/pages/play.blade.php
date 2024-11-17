@@ -1,5 +1,6 @@
 @extends('layouts.logged-user')
 
+@vite('resources/js/bootstrap.js')
 @vite('resources/js/chessboard.js')
 
 @section('content')
@@ -9,6 +10,10 @@
 
             <label>FEN:</label>
             <div id="gameFEN"></div>
+
+            <div>
+                @livewire('chess-game-pairing')
+            </div>
         </div>
     </div>
 @stop
