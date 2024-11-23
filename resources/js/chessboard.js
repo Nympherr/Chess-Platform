@@ -3,22 +3,37 @@ import '@chrisoakman/chessboard2/dist/chessboard2.min.css';
 import { Chess } from 'chess.js'
 
 Echo.channel('chess-room')
-    .listen('.players.paired', (event) => {
-        alert(`${event.player1} vs ${event.player2}`);
-    });
+  .listen('.players.paired', (event) => {
+    Livewire.dispatch('update_pairing', [event.player1, event.player2]);
+});
 
-const game = new Chess()
-let playerTurn = null;
-const gameResultElement = document.getElementById('game-result');
-const playerTurnElement = document.getElementById('player-turn');
+let game;
+let playerTurn;
+let gameResultElement;
+let playerTurnElement;
+let board;
 
-const boardConfig = {
-  draggable: true,
-  position: game.fen(),
-  onDragStart,
-  onDrop
+function loadChessBoard() {
+  game = new Chess();
+  playerTurn = null;
+  gameResultElement = document.getElementById('game-result');
+  playerTurnElement = document.getElementById('player-turn');
+  const boardConfig = {
+    draggable: true,
+    position: game.fen(),
+    onDragStart,
+    onDrop
+  }
+  board = Chessboard2('chessBoard', boardConfig);
 }
-const board = Chessboard2('chessBoard', boardConfig)
+
+let checkInterval = setInterval(() => {
+  const chessBoardElement = document.getElementById('chessBoard');
+  if (chessBoardElement) {
+      clearInterval(checkInterval);
+      loadChessBoard();
+  }
+}, 500);
 
 function onDragStart (dragStartEvt) {
 

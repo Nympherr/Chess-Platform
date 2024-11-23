@@ -5,7 +5,7 @@
 <head>
 
     @include('includes.head')
-
+    
 </head>
 
 <body class="h-screen">

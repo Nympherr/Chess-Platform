@@ -1,5 +1,5 @@
 <div>
-    @if ($isPairing)
+    @if ($is_pairing)
         <p class="font-bold text-lg">Waiting for other player to join...</p>
     @else
         <div>
@@ -10,11 +10,11 @@
             <div class="flex justify-between mt-4">
                 <div>
                     <p class="font-bold">WHITE player</p>
-                    <p>{{ $player1 }}</p>
+                    <p>{{ $player_1 }}</p>
                 </div>
                 <div>
                     <p class="font-bold">BLACK player</p>
-                    <p>{{ $player2 }}</p>
+                    <p>{{ $player_2 }}</p>
                 </div>
             </div>
         </div>

@@ -7,6 +7,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class PlayerPaired implements ShouldBroadcastNow
 {
@@ -24,11 +25,17 @@ class PlayerPaired implements ShouldBroadcastNow
     //TODO
     public function broadcastOn()
     {
+        Log::info('Broadcasting PlayerPaired event', ['player1' => $this->player1, 'player2' => $this->player2]);
         return new Channel('chess-room');
     }
 
     public function broadcastAs()
     {
-        return 'players.paired';
+        $eventName = 'players.paired';
+
+        // Log the event name being broadcast
+        Log::info("Broadcasting event: $eventName");
+    
+        return $eventName;
     }
 }

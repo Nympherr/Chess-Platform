@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Auth;
 class ChessGamePairing extends Component
 {
 
-    public $isPairing = true;
-    public $player1 = null;
-    public $player2 = null;
+    public $is_pairing = true;
+    public $player_1 = null;
+    public $player_2 = null;
 
     public function mount()
     {
@@ -23,7 +23,6 @@ class ChessGamePairing extends Component
     {
 
         $current_user = Auth::user()->id;
-
         $waiting_player = Cache::pull('waiting_player');
 
         if (!$waiting_player) {
@@ -35,12 +34,22 @@ class ChessGamePairing extends Component
             return;
         }
 
-        $this->player1 = \App\Models\User::find($waiting_player)->name;
-        $this->player2 = \App\Models\User::find($current_user)->name;
-        $this->isPairing = false;
+        $this->player_1 = \App\Models\User::find($waiting_player)->name;
+        $this->player_2 = \App\Models\User::find($current_user)->name;
 
-        broadcast(new PlayerPaired($this->player1, $this->player2));
-        Cache::pull('waiting_player');
+        broadcast(new PlayerPaired($this->player_1, $this->player_2));
+
+        // For 2nd player
+        $this->is_pairing = false;
+    }
+
+    protected $listeners = ['update_pairing'];
+
+    public function update_pairing($player_1, $player_2)
+    {
+        $this->player_1 = $player_1;
+        $this->player_2 = $player_2;
+        $this->is_pairing = false;
     }
 
     public function render()
