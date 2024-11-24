@@ -2,12 +2,18 @@ import '@chrisoakman/chessboard2/dist/chessboard2.min.js';
 import '@chrisoakman/chessboard2/dist/chessboard2.min.css';
 import { Chess } from 'chess.js'
 
-console.log("Happened");
+Echo.channel('chess-room')
+  .listen('.move.made', (event) => {
+    broadcastMove(event);
+});
 
 const game = new Chess();
-let playerTurn = null;
+let playerTurn = 'w';
+let move = null;
 const gameResultElement = document.getElementById('game-result');
+const gameResultParentElement = document.getElementById('game-result-div');
 const playerTurnElement = document.getElementById('player-turn');
+const playerTurnParentElement = document.getElementById('player-turn-div');
 const boardConfig = {
   draggable: true,
   position: game.fen(),
@@ -43,25 +49,25 @@ function onDrop (dropEvt) {
   if(dropEvt.source == dropEvt.target){
     return;
   }
-  
-  let move;
-  try {
-    move = game.move({
-      from: dropEvt.source,
-      to: dropEvt.target,
-      promotion: 'q',
-    });
-  } catch (error) {
+
+  const moveResult = makeMove(dropEvt.source, dropEvt.target);
+
+  if (moveResult === 'snapback') {
     return 'snapback';
   }
 
-  if (!move){
-    return 'snapback';
-  }
+  checkGameState();
+
+  Livewire.dispatch('update_move', [dropEvt.source, dropEvt.target, playerTurn]);
+}
+
+function checkGameState () {
 
   playerTurn = game.turn();
 
   if(game.isGameOver()){
+    gameResultParentElement.style.display = 'block';
+    playerTurnParentElement.style.display = 'none';
     if (game.isCheckmate() && playerTurn === 'w') {
       gameResultElement.textContent = 'Black wins! 0 - 1'
     } else if (game.isCheckmate() && playerTurn === 'b') {
@@ -77,7 +83,9 @@ function onDrop (dropEvt) {
     } else if (game.isDraw()) {
       gameResultElement.textContent = 'Game is drawn! 1/2'
     }
+    return;
   }
+
   switch(playerTurn){
     case 'w':
       playerTurnElement.textContent = 'white';
@@ -86,4 +94,33 @@ function onDrop (dropEvt) {
       playerTurnElement.textContent = 'black';
       break;
   }
+}
+
+function makeMove (sourcePosition, targetPosition) {
+
+  try {
+    move = game.move({
+      from: sourcePosition,
+      to: targetPosition,
+      promotion: 'q',
+    });
+  } catch (error) {
+    return 'snapback';
+  }
+
+  if (!move){
+    return 'snapback';
+  }
+
+  board.position(game.fen());
+}
+
+function broadcastMove (moveEvent) {
+  
+  if(playerTurn == moveEvent['player_turn']){
+    return;
+  }
+
+  makeMove(moveEvent['move_source'], moveEvent['move_target']);
+  checkGameState();
 }

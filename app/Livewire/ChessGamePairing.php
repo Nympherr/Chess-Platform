@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Events\PlayerPaired;
+use App\Events\MoveMade;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Auth;
 
@@ -39,13 +40,18 @@ class ChessGamePairing extends Component
         $this->is_pairing = false;
     }
 
-    protected $listeners = ['update_pairing'];
+    protected $listeners = ['update_pairing', 'update_move'];
 
     public function update_pairing($player_1, $player_2)
     {
         $this->player_1 = $player_1;
         $this->player_2 = $player_2;
         $this->is_pairing = false;
+    }
+
+    public function update_move($move_source, $move_target, $player_turn)
+    {
+        broadcast(new MoveMade($move_source, $move_target, $player_turn));
     }
 
     public function render()

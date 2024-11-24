@@ -8,17 +8,19 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class PlayerPaired implements ShouldBroadcastNow
+class MoveMade implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $player1;
-    public $player2;
+    public $move_source;
+    public $move_target;
+    public $player_turn;
 
-    public function __construct($player1, $player2)
+    public function __construct($move_source, $move_target, $player_turn)
     {
-        $this->player1 = $player1;
-        $this->player2 = $player2;
+        $this->move_source = $move_source;
+        $this->move_target = $move_target;
+        $this->player_turn = $player_turn;
     }
 
     public function broadcastOn()
@@ -28,6 +30,6 @@ class PlayerPaired implements ShouldBroadcastNow
 
     public function broadcastAs()
     {
-        return 'players.paired';
+        return 'move.made';
     }
 }
