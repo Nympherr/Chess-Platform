@@ -23,5 +23,6 @@
             <p>Result: <span id="game-result">N/A</span></p>
             <p>Current move: <span id="player-turn">white</span></p>
         </div>
+        @vite('resources/js/chessboard.js')
     @endif
 </div>

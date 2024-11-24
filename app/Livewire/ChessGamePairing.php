@@ -25,12 +25,8 @@ class ChessGamePairing extends Component
         $current_user = Auth::user()->id;
         $waiting_player = Cache::pull('waiting_player');
 
-        if (!$waiting_player) {
+        if (!$waiting_player || $waiting_player == $current_user) {
             Cache::put('waiting_player', $current_user, now()->addMinutes(5));
-            return;
-        }
-
-        if($waiting_player == $current_user){
             return;
         }
 
