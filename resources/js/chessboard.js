@@ -14,6 +14,7 @@ const gameResultElement = document.getElementById('game-result');
 const gameResultParentElement = document.getElementById('game-result-div');
 const playerTurnElement = document.getElementById('player-turn');
 const playerTurnParentElement = document.getElementById('player-turn-div');
+const chessboard = document.getElementById('chessBoard');
 const boardConfig = {
   draggable: true,
   position: game.fen(),
@@ -21,6 +22,10 @@ const boardConfig = {
   onDrop
 }
 const board = Chessboard2('chessBoard', boardConfig);
+
+window.addEventListener('update_pairing', (event) => {
+  chessboard.classList.remove('pointer-events-none');
+});
 
 function onDragStart (dragStartEvt) {
 
@@ -56,6 +61,7 @@ function onDrop (dropEvt) {
     return 'snapback';
   }
 
+  chessboard.classList.add('pointer-events-none');
   checkGameState();
 
   Livewire.dispatch('update_move', [dropEvt.source, dropEvt.target, playerTurn]);
@@ -121,6 +127,7 @@ function broadcastMove (moveEvent) {
     return;
   }
 
+  chessboard.classList.remove('pointer-events-none');
   makeMove(moveEvent['move_source'], moveEvent['move_target']);
   checkGameState();
 }

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\ChangeUserSettings;
+use Illuminate\Support\Facades\Auth;
 
 Route::middleware('guest')->group(function () {
     Route::get('/', function() {
@@ -23,7 +24,7 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
 
     Route::get('/play', function() {
-        return view('pages.play');
+        return view('pages.play', ['username' => Auth::user()->name,]);
     });
 
     Route::get('/user-profile', function() {

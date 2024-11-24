@@ -4,7 +4,7 @@
     @endif
     <div>
         <div class="border rounded">
-            <div id="chessBoard" style="width: 400px" wire:ignore></div>
+            <div id="chessBoard" style="width: 400px;" class="pointer-events-none" wire:ignore></div>
         </div>
 
         <div class="flex justify-between mt-4">
