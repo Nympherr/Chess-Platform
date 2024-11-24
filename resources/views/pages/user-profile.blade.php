@@ -7,6 +7,9 @@
     $user_id = $user->id;
     $user_email = $user->email;
     $user_name = $user->name;
+    $won_games_count = $user->won_games;
+    $lost_games_count = $user->lost_games;
+    $drawn_games_count = $user->drawn_games;
 
     // Retrieving user creation date
     $user_creation_date = DB::table('users')
@@ -98,9 +101,9 @@
         
             {{-- TODO --}}
             <div>
-                <p class="text-green-600 font-bold">Won games: 0</p>
-                <p class="text-red-600 font-bold">Lost games: 0</p>
-                <p class="font-bold">Drawn games: 0</p>
+                <p class="text-green-600 font-bold">Won games: {{ $won_games_count }}</p>
+                <p class="text-red-600 font-bold">Lost games: {{ $lost_games_count }}</p>
+                <p class="font-bold">Drawn games: {{ $drawn_games_count }}</p>
             </div>
         </div>
     </div>

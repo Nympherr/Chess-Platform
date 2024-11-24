@@ -23,7 +23,7 @@ const boardConfig = {
 }
 const board = Chessboard2('chessBoard', boardConfig);
 
-window.addEventListener('update_pairing', (event) => {
+window.addEventListener('update_pairing', () => {
   chessboard.classList.remove('pointer-events-none');
 });
 
@@ -74,13 +74,16 @@ function checkGameState () {
   if(game.isGameOver()){
     gameResultParentElement.style.display = 'block';
     playerTurnParentElement.style.display = 'none';
+
     if (game.isCheckmate() && playerTurn === 'w') {
       gameResultElement.textContent = 'Black wins! 0 - 1'
+      Livewire.dispatch('end_game', ['0-1']);
     } else if (game.isCheckmate() && playerTurn === 'b') {
       gameResultElement.textContent = 'White wins! 1 - 0'
-    } else if (game.isStalemate() && playerTurn === 'w') {
-      gameResultElement.textContent = 'Game is drawn! 1/2'
-    } else if (game.isStalemate() && playerTurn === 'b') {
+      Livewire.dispatch('end_game', ['1-0']);
+    } else if (game.isStalemate() || game.isThreefoldRepetition() || game.isInsufficientMaterial() || game.isDraw()) {
+      Livewire.dispatch('end_game', ['1/2']);
+    } else if (game.isStalemate()) {
       gameResultElement.textContent = 'Game is drawn! 1/2'
     } else if (game.isThreefoldRepetition()) {
       gameResultElement.textContent = 'Game is drawn! 1/2'
