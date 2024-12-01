@@ -49,7 +49,6 @@ class StockfishController extends Controller
             $lines = array_filter($lines, 'strlen');
             $last_line = end($lines);
             $last_line = str_replace(' ', '', $last_line);
-
             $best_move = str_replace('bestmove', '',$last_line);
 
             return $best_move;
@@ -68,7 +67,8 @@ class StockfishController extends Controller
         $game_finish_fen = $request->input('fen');
         $result = $request->input('result');
 
-        $user_name = User::find($user_id)->name;
+        $user = User::find($user_id);
+        $user_name = $user->name;
 
         $is_player_1 = $player_color == "w"? true : false;
 
@@ -82,6 +82,20 @@ class StockfishController extends Controller
         ]);
 
         $chess_game->save();
+
+        switch($result){
+            case '1-0':
+                $is_player_1 ? $user->won_games += 1 : $user->lost_games += 1;
+                break;
+            case '0-1':
+                $is_player_1 ? $user->lost_games += 1 : $user->won_games += 1;
+                break;
+            case '1/2':
+                $user->drawn_games += 1;
+                break;
+        }
+
+        $user->save();
 
         return response()->json(['completed' => "Game has finished!"]);
     }

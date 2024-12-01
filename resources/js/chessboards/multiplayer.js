@@ -77,12 +77,12 @@ function checkGameState () {
 
     if (game.isCheckmate() && playerTurn === 'w') {
       gameResultElement.textContent = 'Black wins! 0 - 1'
-      Livewire.dispatch('end_game', ['0-1']);
+      Livewire.dispatch('end_game', ['0-1', game.fen()]);
     } else if (game.isCheckmate() && playerTurn === 'b') {
       gameResultElement.textContent = 'White wins! 1 - 0'
-      Livewire.dispatch('end_game', ['1-0']);
+      Livewire.dispatch('end_game', ['1-0', game.fen()]);
     } else if (game.isStalemate() || game.isThreefoldRepetition() || game.isInsufficientMaterial() || game.isDraw()) {
-      Livewire.dispatch('end_game', ['1/2']);
+      Livewire.dispatch('end_game', ['1/2', game.fen()]);
     } else if (game.isStalemate()) {
       gameResultElement.textContent = 'Game is drawn! 1/2'
     } else if (game.isThreefoldRepetition()) {

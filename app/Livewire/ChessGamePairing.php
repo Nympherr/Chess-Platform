@@ -55,10 +55,10 @@ class ChessGamePairing extends Component
         broadcast(new MoveMade($move_source, $move_target, $player_turn));
     }
 
-    public function end_game($result)
+    public function end_game($result, $game_fen)
     {
 
-        broadcast(new GameFinished($result, $this->player_1, $this->player_2));
+        broadcast(new GameFinished($result, $game_fen, $this->player_1, $this->player_2));
     }
 
     public function render()

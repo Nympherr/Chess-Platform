@@ -119,7 +119,7 @@
         <h2 class="font-bold text-xl mt-4">
             My games
         </h2>
-        <div class="flex mt-5 gap-12">
+        <div class="flex mt-5 gap-12 flex-wrap">
             @foreach ($chess_games as $index => $game)
                 <div class="border border-gray-600 p-4 rounded">
                     <p class="text-center">{{ $game->player2_name }}</p>
