@@ -1,20 +1,10 @@
+import axios from 'axios';
 import '@chrisoakman/chessboard2/dist/chessboard2.min.js';
 import '@chrisoakman/chessboard2/dist/chessboard2.min.css';
 import { Chess } from 'chess.js'
 
-// Echo.channel('chess-room')
-//   .listen('.move.made', (event) => {
-//     broadcastMove(event);
-// });
-
 const game = new Chess();
-let playerTurn = 'w';
 let move = null;
-const gameResultElement = document.getElementById('game-result');
-const gameResultParentElement = document.getElementById('game-result-div');
-const playerTurnElement = document.getElementById('player-turn');
-const playerTurnParentElement = document.getElementById('player-turn-div');
-const chessboard = document.getElementById('chessBoard');
 const boardConfig = {
   draggable: true,
   position: game.fen(),
@@ -22,10 +12,12 @@ const boardConfig = {
   onDrop
 }
 const board = Chessboard2('chessBoard', boardConfig);
-
-window.addEventListener('update_pairing', () => {
-  chessboard.classList.remove('pointer-events-none');
-});
+const boardElement = document.getElementById('chessBoard');
+const playerColorElement = document.getElementById('player-color');
+const sideMoveElement = document.getElementById('player-move');
+const playerColor = decidePlayerColor();
+let sideToMove = 'w';
+changeWhoseTurn('w');
 
 function onDragStart (dragStartEvt) {
 
@@ -61,28 +53,19 @@ function onDrop (dropEvt) {
     return 'snapback';
   }
 
-  chessboard.classList.add('pointer-events-none');
-  checkGameState();
-
-  Livewire.dispatch('update_move', [dropEvt.source, dropEvt.target, playerTurn]);
+  sendMoveToServer();
 }
 
 function checkGameState () {
 
-  playerTurn = game.turn();
+  sideToMove = game.turn();
 
   if(game.isGameOver()){
-    gameResultParentElement.style.display = 'block';
-    playerTurnParentElement.style.display = 'none';
 
-    if (game.isCheckmate() && playerTurn === 'w') {
+    if (game.isCheckmate() && sideToMove === 'w') {
       gameResultElement.textContent = 'Black wins! 0 - 1'
-      Livewire.dispatch('end_game', ['0-1']);
-    } else if (game.isCheckmate() && playerTurn === 'b') {
+    } else if (game.isCheckmate() && sideToMove === 'b') {
       gameResultElement.textContent = 'White wins! 1 - 0'
-      Livewire.dispatch('end_game', ['1-0']);
-    } else if (game.isStalemate() || game.isThreefoldRepetition() || game.isInsufficientMaterial() || game.isDraw()) {
-      Livewire.dispatch('end_game', ['1/2']);
     } else if (game.isStalemate()) {
       gameResultElement.textContent = 'Game is drawn! 1/2'
     } else if (game.isThreefoldRepetition()) {
@@ -95,14 +78,7 @@ function checkGameState () {
     return;
   }
 
-  switch(playerTurn){
-    case 'w':
-      playerTurnElement.textContent = 'white';
-      break;
-    case 'b':
-      playerTurnElement.textContent = 'black';
-      break;
-  }
+  changeWhoseTurn(sideToMove);
 }
 
 function makeMove (sourcePosition, targetPosition) {
@@ -122,15 +98,53 @@ function makeMove (sourcePosition, targetPosition) {
   }
 
   board.position(game.fen());
+
+  checkGameState();
 }
 
-function broadcastMove (moveEvent) {
-  
-  if(playerTurn == moveEvent['player_turn']){
-    return;
-  }
+const sendMoveToServer = async () => {
 
-  chessboard.classList.remove('pointer-events-none');
-  makeMove(moveEvent['move_source'], moveEvent['move_target']);
-  checkGameState();
+    axios.post('/get-stockfish-move', { gamePosition: game.fen() }, {
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        }
+    })
+    .then(response => {
+        console.log(response.data.computerMove);
+        game.move(response.data.computerMove);
+        board.position(game.fen());
+        sideToMove = game.turn();
+        changeWhoseTurn();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+};
+
+function decidePlayerColor() {
+    const isWhite = () => Math.random() >= 0.5;
+
+    if(isWhite()){
+        playerColorElement.textContent += 'white';
+        return 'w';
+    } else {
+        playerColorElement.textContent += 'black';
+        return 'b';
+    }
+}
+
+function changeWhoseTurn(){
+
+    if(sideToMove == playerColor){
+        sideMoveElement.textContent = 'Your move';
+        boardElement.classList.remove('pointer-events-none');
+    } else {
+        sideMoveElement.textContent = 'Computer is thinking';
+        boardElement.classList.add('pointer-events-none');
+    }
+}
+
+// Only when player starts as white
+if(playerColor == 'b'){
+    sendMoveToServer();
 }

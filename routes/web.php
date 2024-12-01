@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\ChangeUserSettings;
+use App\Http\Controllers\Stockfish\StockfishController;
 use Illuminate\Support\Facades\Auth;
 
 Route::middleware('guest')->group(function () {
@@ -38,6 +39,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/change-user-info', [ChangeUserSettings::class, 'change_user_settings']);
     
     Route::post('/update-password', [ChangeUserSettings::class, 'update_password']);
+
+    Route::post('/get-stockfish-move', [StockfishController::class, 'send_stockfish_move']);
 });
 
 require __DIR__.'/auth.php';

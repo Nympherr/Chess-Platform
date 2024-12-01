@@ -1,7 +1,7 @@
 @extends('layouts.logged-user')
 
 @vite('resources/js/bootstrap.js')
-@vite('resources/js/chessboard.js')
+@vite('resources/js/chessboards/multiplayer.js')
 @vite('resources/js/channels/chess.js')
 
 @section('content')
