@@ -15,8 +15,11 @@ const board = Chessboard2('chessBoard', boardConfig);
 const boardElement = document.getElementById('chessBoard');
 const playerColorElement = document.getElementById('player-color');
 const sideMoveElement = document.getElementById('player-move');
+const resultElement = document.getElementById('game-result');
 const playerColor = decidePlayerColor();
+let gameEnded = false;
 let sideToMove = 'w';
+let result = null;
 changeWhoseTurn('w');
 
 function onDragStart (dragStartEvt) {
@@ -62,19 +65,32 @@ function checkGameState () {
 
   if(game.isGameOver()){
 
-    if (game.isCheckmate() && sideToMove === 'w') {
-      gameResultElement.textContent = 'Black wins! 0 - 1'
-    } else if (game.isCheckmate() && sideToMove === 'b') {
-      gameResultElement.textContent = 'White wins! 1 - 0'
+    gameEnded = true;
+    resultElement.style.display = 'block';
+    sideMoveElement.style.display = 'none';
+
+    if (game.isCheckmate() && sideToMove === 'w' && playerColor === 'w') {
+        resultElement.textContent = 'You lost! Computer won!'
+        result = '0-1';
+    } else if (game.isCheckmate() && sideToMove === 'b' && playerColor === 'w') {
+        resultElement.textContent = 'You won! Computer lost!'
+        result = '1-0';
     } else if (game.isStalemate()) {
-      gameResultElement.textContent = 'Game is drawn! 1/2'
+        resultElement.textContent = 'Game is drawn! 1/2'
+        result = '1/2';
     } else if (game.isThreefoldRepetition()) {
-      gameResultElement.textContent = 'Game is drawn! 1/2'
+        resultElement.textContent = 'Game is drawn! 1/2'
+        result = '1/2';
     } else if (game.isInsufficientMaterial()) {
-      gameResultElement.textContent = 'Game is drawn! 1/2'
+        resultElement.textContent = 'Game is drawn! 1/2'
+        result = '1/2';
     } else if (game.isDraw()) {
-      gameResultElement.textContent = 'Game is drawn! 1/2'
+        resultElement.textContent = 'Game is drawn! 1/2'
+        result = '1/2';
     }
+
+    sendGameDataToServer();
+
     return;
   }
 
@@ -104,13 +120,15 @@ function makeMove (sourcePosition, targetPosition) {
 
 const sendMoveToServer = async () => {
 
+    if(gameEnded){
+        return;
+    }
     axios.post('/get-stockfish-move', { gamePosition: game.fen() }, {
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
         }
     })
     .then(response => {
-        console.log(response.data.computerMove);
         game.move(response.data.computerMove);
         board.position(game.fen());
         sideToMove = game.turn();
@@ -147,4 +165,23 @@ function changeWhoseTurn(){
 // Only when player starts as white
 if(playerColor == 'b'){
     sendMoveToServer();
+}
+
+function sendGameDataToServer(){
+  
+  axios.post('/finish-stockfish-game', {
+    id: window.userData,
+    color: playerColor,
+    fen: game.fen(),
+    result: result,
+  },{
+    headers: {
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+    }
+  }).then(response => {
+    window.alert(response.data.completed);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
 }

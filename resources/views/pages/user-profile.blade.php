@@ -1,4 +1,5 @@
 @extends('layouts.logged-user')
+@vite('resources/js/chessboards/settings.js')
 
 @php
 
@@ -20,6 +21,13 @@
     $user_creation_date_object = new DateTime($user_creation_date);
     $current_date = new DateTime();
     $days_user_is_registed = $current_date->diff($user_creation_date_object)->days;
+
+    // Games
+    $chess_games = DB::table('chess_games')
+        ->where('player1_id', $user_id)
+        ->orWhere('player2_id', $user_id)
+        ->get();
+
 @endphp
 
 @section('content')
@@ -99,7 +107,6 @@
                 User created at: {{ $user_creation_date }} ({{ $days_user_is_registed }}d ago)
             </span>
         
-            {{-- TODO --}}
             <div>
                 <p class="text-green-600 font-bold">Won games: {{ $won_games_count }}</p>
                 <p class="text-red-600 font-bold">Lost games: {{ $lost_games_count }}</p>
@@ -107,4 +114,33 @@
             </div>
         </div>
     </div>
+
+    <div class="border-t mt-5 pb-8 border-purple-900">
+        <h2 class="font-bold text-xl mt-4">
+            My games
+        </h2>
+        <div class="flex mt-5 gap-12">
+            @foreach ($chess_games as $index => $game)
+                <div class="border border-gray-600 p-4 rounded">
+                    <p class="text-center">{{ $game->player2_name }}</p>
+                    <div id="board{{ $index }}" style="width: 200px;"></div>
+                    <p class="text-center">{{ $game->player1_name }}</p>
+                    <p class="font-bold">Result: {{ $game->result }}</p>
+                </div>                
+            @endforeach
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const fenPositions = @json($chess_games->pluck('game_finish_fen'));
+
+            fenPositions.forEach((fen, index) => {
+                Chessboard2(`board${index}`, {
+                    position: fen,
+                    showNotation: false
+                });
+            });
+        });
+    </script>
 @stop

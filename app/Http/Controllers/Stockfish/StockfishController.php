@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Stockfish;
 
 use App\Http\Controllers\Controller;
+use App\Models\ChessGame;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class StockfishController extends Controller
@@ -35,10 +37,8 @@ class StockfishController extends Controller
         $process = proc_open($stockfish_path, $descriptorspec, $pipes);
 
         if (is_resource($process)) {
-            fwrite($pipes[0], "uci\nposition fen {$game_position}\ngo movetime 5000");
+            fwrite($pipes[0], "uci\nposition fen {$game_position}\ngo movetime 2000");
             fclose($pipes[0]);
-
-            sleep(3);
 
             $output = stream_get_contents($pipes[1]);
             fclose($pipes[1]);
@@ -56,5 +56,33 @@ class StockfishController extends Controller
         } else {
             return 'error';
         }
+    }
+
+    /**
+     * Saves game to database
+     */
+    public function finish_game(Request $request)
+    {
+        $user_id = $request->input('id');
+        $player_color = $request->input('color');
+        $game_finish_fen = $request->input('fen');
+        $result = $request->input('result');
+
+        $user_name = User::find($user_id)->name;
+
+        $is_player_1 = $player_color == "w"? true : false;
+
+        $chess_game = ChessGame::create([
+            'player1_id' => $is_player_1 ? $user_id : 'stockfish',
+            'player2_id' => $is_player_1 ? 'stockfish' : $user_id,
+            'player1_name' => $is_player_1 ? $user_name : 'stockfish',
+            'player2_name' => $is_player_1 ? 'stockfish' : $user_name,
+            'result' => $result,
+            'game_finish_fen' => $game_finish_fen,
+        ]);
+
+        $chess_game->save();
+
+        return response()->json(['completed' => "Game has finished!"]);
     }
 }

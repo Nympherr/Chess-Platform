@@ -29,7 +29,8 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/stockfish', function() {
-        return view('pages.stockfish');
+        $user = Auth::id();
+        return view('pages.stockfish', compact('user'));
     });
 
     Route::get('/user-profile', function() {
@@ -41,6 +42,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/update-password', [ChangeUserSettings::class, 'update_password']);
 
     Route::post('/get-stockfish-move', [StockfishController::class, 'send_stockfish_move']);
+
+    Route::post('/finish-stockfish-game', [StockfishController::class, 'finish_game']);
 });
 
 require __DIR__.'/auth.php';
