@@ -27,6 +27,10 @@ Route::middleware('auth')->group(function () {
         return view('pages.play', ['username' => Auth::user()->name,]);
     });
 
+    Route::get('/stockfish', function() {
+        return view('pages.stockfish');
+    });
+
     Route::get('/user-profile', function() {
         return view('pages.user-profile');
     })->name('user-profile');
