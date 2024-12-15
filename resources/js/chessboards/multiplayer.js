@@ -89,12 +89,12 @@ function checkGameState () {
 
     if (game.isCheckmate() && playerTurn === 'w') {
       gameResultElement.textContent = 'Black wins! 0 - 1'
-      Livewire.dispatch('end_game', ['0-1', game.fen()]);
+      Livewire.dispatch('end_game', ['0-1', game.fen(), game.pgn()]);
     } else if (game.isCheckmate() && playerTurn === 'b') {
       gameResultElement.textContent = 'White wins! 1 - 0'
-      Livewire.dispatch('end_game', ['1-0', game.fen()]);
+      Livewire.dispatch('end_game', ['1-0', game.fen(), game.pgn()]);
     } else if (game.isStalemate() || game.isThreefoldRepetition() || game.isInsufficientMaterial() || game.isDraw()) {
-      Livewire.dispatch('end_game', ['1/2', game.fen()]);
+      Livewire.dispatch('end_game', ['1/2', game.fen(), game.pgn()]);
     } else if (game.isStalemate()) {
       gameResultElement.textContent = 'Game is drawn! 1/2'
     } else if (game.isThreefoldRepetition()) {
@@ -153,12 +153,12 @@ function clockEnd() {
     document.getElementById('white-time').classList.remove('bg-green-500');
     document.getElementById('white-time').classList.add('bg-red-500');
     gameResultElement.textContent = 'Black wins! 0 - 1'
-    Livewire.dispatch('end_game', ['0-1', game.fen()]);
+    Livewire.dispatch('end_game', ['0-1', game.fen(), game.pgn()]);
   } else if (playerTurn === 'b') {
     document.getElementById('black-time').classList.remove('bg-green-500');
     document.getElementById('black-time').classList.add('bg-red-500');
     gameResultElement.textContent = 'White wins! 1 - 0'
-    Livewire.dispatch('end_game', ['1-0', game.fen()]);
+    Livewire.dispatch('end_game', ['1-0', game.fen(), game.pgn()]);
   }
   return;
 }

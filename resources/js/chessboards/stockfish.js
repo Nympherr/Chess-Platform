@@ -174,6 +174,7 @@ function sendGameDataToServer(){
     color: playerColor,
     fen: game.fen(),
     result: result,
+    history: game.pgn(),
   },{
     headers: {
         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,

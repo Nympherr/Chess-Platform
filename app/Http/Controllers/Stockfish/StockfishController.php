@@ -66,6 +66,7 @@ class StockfishController extends Controller
         $player_color = $request->input('color');
         $game_finish_fen = $request->input('fen');
         $result = $request->input('result');
+        $history = $request->input('history');
 
         $user = User::find($user_id);
         $user_name = $user->name;
@@ -79,6 +80,7 @@ class StockfishController extends Controller
             'player2_name' => $is_player_1 ? 'stockfish' : $user_name,
             'result' => $result,
             'game_finish_fen' => $game_finish_fen,
+            'game_history' => $history
         ]);
 
         $chess_game->save();

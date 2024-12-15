@@ -19,5 +19,6 @@ class ChessGame extends Model
         'player2_name',
         'result',
         'game_finish_fen',
+        'game_history',
     ];
 }

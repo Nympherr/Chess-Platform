@@ -18,7 +18,7 @@ class GameFinished implements ShouldBroadcastNow
     public $player1;
     public $player2;
 
-    public function __construct($result, $game_fen, $player1, $player2)
+    public function __construct($result, $game_fen, $game_history, $player1, $player2)
     {
         $this->result = $result;
 
@@ -50,6 +50,7 @@ class GameFinished implements ShouldBroadcastNow
         ->where('player2_name', $player2->name)
         ->where('result', $result)
         ->where('game_finish_fen', $game_fen)
+        ->where('game_history', $game_history)
         ->first();
     
         if (!$existingGame) {
@@ -61,6 +62,7 @@ class GameFinished implements ShouldBroadcastNow
                 'player2_name' => $player2->name,
                 'result' => $result,
                 'game_finish_fen' => $game_fen,
+                'game_history' => $game_history
             ]);
         
             $chess_game->save();

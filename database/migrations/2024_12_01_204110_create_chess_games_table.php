@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('player2_name');
             $table->string('result');
             $table->string('game_finish_fen');
+            $table->string('game_history');
         });
     }
 

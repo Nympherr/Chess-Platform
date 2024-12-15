@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\ChangeUserSettings;
 use App\Http\Controllers\Stockfish\StockfishController;
+use App\Http\Controllers\Game\AnalyseGameController;
 use Illuminate\Support\Facades\Auth;
 
 Route::middleware('guest')->group(function () {
@@ -36,6 +37,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/user-profile', function() {
         return view('pages.user-profile');
     })->name('user-profile');
+
+    Route::get('/game/{game_id}', [AnalyseGameController::class, 'pass_game_data']);
 
     Route::post('/change-user-info', [ChangeUserSettings::class, 'change_user_settings']);
     
