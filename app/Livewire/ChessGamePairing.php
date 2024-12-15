@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Events\PlayerPaired;
 use App\Events\MoveMade;
 use App\Events\GameFinished;
+use App\Events\GameClockEnded;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,6 +16,7 @@ class ChessGamePairing extends Component
     public $is_pairing = true;
     public $player_1 = null;
     public $player_2 = null;
+    public $clock_started = false;
 
     public function mount()
     {
@@ -41,7 +43,7 @@ class ChessGamePairing extends Component
         $this->is_pairing = false;
     }
 
-    protected $listeners = ['update_pairing', 'update_move', 'end_game'];
+    protected $listeners = ['update_pairing', 'update_move', 'end_game', 'clock_finished'];
 
     public function update_pairing($player_1, $player_2)
     {
@@ -57,8 +59,12 @@ class ChessGamePairing extends Component
 
     public function end_game($result, $game_fen)
     {
-
         broadcast(new GameFinished($result, $game_fen, $this->player_1, $this->player_2));
+    }
+
+    public function clock_finished()
+    {
+        broadcast(new GameClockEnded());
     }
 
     public function render()
