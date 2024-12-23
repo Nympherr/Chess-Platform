@@ -12,7 +12,7 @@
                 <div class="flex flex-col items-center gap-2">
                     <p id="black-name">{{ $player_2 }}</p>
                     <div class="font-bold border-solid border-2 border-gray-900 px-4 py-1 text-center" id="black-time" wire:ignore>
-                        00:05
+                        05:00
                     </div>
                 </div>
 
