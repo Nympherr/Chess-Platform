@@ -38,7 +38,7 @@ Route::middleware('auth')->group(function () {
         return view('pages.user-profile');
     })->name('user-profile');
 
-    Route::get('/game/{game_id}', [AnalyseGameController::class, 'pass_game_data']);
+    Route::get('/game/{game_id}', [AnalyseGameController::class, 'pass_game_data'])->name('analyse_game');
 
     Route::post('/change-user-info', [ChangeUserSettings::class, 'change_user_settings']);
     
@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/get-stockfish-move', [StockfishController::class, 'send_stockfish_move']);
 
-    Route::post('/finish-stockfish-game', [StockfishController::class, 'finish_game']);
+    Route::post('/finish-stockfish-game', [StockfishController::class, 'finish_game'])->name('finish_game');
 });
 
 require __DIR__.'/auth.php';

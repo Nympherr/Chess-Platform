@@ -101,4 +101,6 @@ class StockfishController extends Controller
 
         return response()->json(['completed' => "Game has finished!"]);
     }
+
+    
 }
